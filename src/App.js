@@ -1,39 +1,30 @@
 import './App.css';
-import React, {Component} from 'react';
+import React, { useState, useEffect} from 'react';
 import CardList from './components/card-list/card-list.component';
 import SearchField from './components/searchField/searchField.component';
 
 
-class App extends Component {
-  constructor(){
-    super();
-
-    this.state = {
-      monsters: [],
-      searchField: ''
-    }
-  }
+const App = () => {
+  const [monsters, setMonsters] = useState([]);
+  const [searchField, setSearchField] = useState('');
   
-  handleInput = (event) => this.setState({searchField: event.target.value}, () => console.log(this.state));
+  const handleInput = (event) => setSearchField(event.target.value);
 
-  componentDidMount() {
-    fetch("https://jsonplaceholder.typicode.com/users")
-  .then(response => response.json())
-  .then(users => this.setState({monsters: users}))
-  }
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+    .then(response => response.json())
+    .then(users => {setMonsters(users)});
+    }, [])
 
-  render() {
-
-  const filteredArray = this.state.monsters.filter(monster => monster.name.toLowerCase().includes(this.state.searchField.toLowerCase()));
+  const filteredArray = monsters.filter(monster => monster.name.toLowerCase().includes(searchField.toLowerCase()));
 
   return (
     <div className="App">
         <h1>Monsters Roledex</h1>
-        <SearchField onChange={this.handleInput}/>
+        <SearchField onChange={handleInput}/>
         <CardList monsters={filteredArray}/>
     </div>
   );
-}
 }
 
 export default App;
